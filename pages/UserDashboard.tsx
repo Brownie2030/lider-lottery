@@ -77,127 +77,154 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({ user, refreshUser 
     <div className="max-w-6xl mx-auto p-4 space-y-8">
       
       {/* Header Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="glass-panel p-6 rounded-2xl flex flex-col justify-center items-center border-b-4 border-yellow-500">
-            <span className="text-slate-400 text-sm font-bold uppercase tracking-wider">Your Balance</span>
-            <span className="text-3xl font-mono font-bold text-white">${user.balance.toLocaleString()}</span>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="glass-panel p-6 rounded-3xl relative overflow-hidden group">
+            <div className="absolute inset-0 bg-yellow-500/10 group-hover:bg-yellow-500/20 transition-colors"></div>
+            <div className="relative z-10">
+                <div className="text-yellow-400 text-xs font-bold uppercase tracking-widest mb-1">Your Balance</div>
+                <div className="text-4xl font-mono font-bold text-white tracking-tighter">${user.balance.toLocaleString()}</div>
+            </div>
+            <div className="absolute right-0 bottom-0 p-4 opacity-20">
+                <svg className="w-16 h-16 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            </div>
         </div>
-        <div className="glass-panel p-6 rounded-2xl flex flex-col justify-center items-center border-b-4 border-blue-500">
-            <span className="text-slate-400 text-sm font-bold uppercase tracking-wider">Current Jackpot</span>
-            <span className="text-3xl font-mono font-bold gold-gradient">${currentDraw?.jackpot.toLocaleString() || 'Loading...'}</span>
+
+        <div className="glass-panel p-6 rounded-3xl relative overflow-hidden group">
+             <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-purple-600/10"></div>
+             <div className="relative z-10">
+                <div className="text-purple-300 text-xs font-bold uppercase tracking-widest mb-1">Current Jackpot</div>
+                <div className="text-3xl font-mono font-bold gold-gradient tracking-tighter">${currentDraw?.jackpot.toLocaleString() || '...'}</div>
+            </div>
         </div>
-        <div className="glass-panel p-6 rounded-2xl flex flex-col justify-center items-center border-b-4 border-purple-500">
-            <span className="text-slate-400 text-sm font-bold uppercase tracking-wider">Draw Date</span>
-            <span className="text-xl font-bold text-white">
-                {currentDraw ? new Date(currentDraw.drawDate).toLocaleDateString() : '...'}
-            </span>
+
+        <div className="glass-panel p-6 rounded-3xl relative overflow-hidden">
+            <div className="relative z-10">
+                <div className="text-blue-300 text-xs font-bold uppercase tracking-widest mb-1">Next Draw</div>
+                <div className="text-2xl font-bold text-white">
+                    {currentDraw ? new Date(currentDraw.drawDate).toLocaleDateString() : '...'}
+                </div>
+            </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
         {/* Purchase Section */}
-        <section className="glass-panel p-6 md:p-8 rounded-2xl">
-            <h2 className="text-2xl font-display font-bold mb-6 text-white flex items-center gap-2">
-                <span className="w-2 h-8 bg-yellow-500 rounded-full inline-block"></span>
-                Purchase Ticket
-            </h2>
+        <section className="glass-panel p-8 rounded-3xl border border-white/10 shadow-xl">
+            <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-display font-bold text-white flex items-center gap-3">
+                    <span className="flex items-center justify-center w-10 h-10 rounded-full bg-indigo-500 text-white shadow-lg shadow-indigo-500/40">1</span>
+                    Pick Numbers
+                </h2>
+                <button 
+                    onClick={handleRandomPick}
+                    className="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-xs font-bold text-yellow-400 hover:text-yellow-300 border border-yellow-500/30 transition-all"
+                >
+                    ⚡ QUICK PICK
+                </button>
+            </div>
             
             {/* AI Assistant */}
-            <div className="bg-indigo-900/30 p-4 rounded-xl mb-6 border border-indigo-500/30">
-                <h3 className="text-sm font-bold text-indigo-300 mb-2 flex items-center">
-                    ✨ ASK THE ORACLE
-                </h3>
+            <div className="bg-gradient-to-r from-slate-900 to-indigo-900/50 p-5 rounded-2xl mb-8 border border-indigo-500/20">
+                <label className="text-xs font-bold text-indigo-300 mb-3 flex items-center gap-2">
+                    <span className="animate-pulse">✨</span> AI DREAM INTERPRETER
+                </label>
                 <div className="flex gap-2">
                     <input 
                         type="text" 
                         value={dreamInput}
                         onChange={(e) => setDreamInput(e.target.value)}
-                        placeholder="e.g., I dreamt of flying over a golden ocean..."
-                        className="flex-1 bg-black/30 border border-indigo-500/30 rounded-lg px-3 py-2 text-sm text-white focus:outline-none"
+                        placeholder="I dreamt of flying over a golden city..."
+                        className="flex-1 bg-black/40 border border-indigo-500/30 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-indigo-400 transition-colors"
                     />
                     <button 
                         onClick={handleAiPick}
                         disabled={isAiLoading || !dreamInput}
-                        className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-sm font-bold transition-colors disabled:opacity-50"
+                        className="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2 rounded-xl text-sm font-bold transition-all shadow-lg shadow-indigo-900/40 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        {isAiLoading ? '...' : 'Interpret'}
+                        {isAiLoading ? 'Thinking...' : 'Generate'}
                     </button>
                 </div>
             </div>
 
-            <div className="flex justify-between items-center mb-4">
-                <span className="text-slate-400 text-sm">Select {LOTTERY_CONFIG.selectionCount} numbers</span>
-                <button 
-                    onClick={handleRandomPick}
-                    className="text-xs font-bold text-yellow-400 hover:text-yellow-300 underline"
-                >
-                    Quick Pick (Random)
-                </button>
-            </div>
-
             <NumberSelector selectedNumbers={selectedNumbers} onToggleNumber={handleToggleNumber} />
 
-            <div className="mt-8 flex items-center justify-between">
-                <div className="text-slate-300">
-                    Cost: <span className="font-bold text-white">${LOTTERY_CONFIG.ticketPrice}</span>
+            <div className="mt-8 flex items-center justify-between border-t border-white/5 pt-6">
+                <div className="text-slate-400 text-sm">
+                    Ticket Price: <span className="font-bold text-white text-lg ml-2">${LOTTERY_CONFIG.ticketPrice}</span>
                 </div>
                 <button 
                     onClick={handlePurchase}
                     disabled={selectedNumbers.length !== LOTTERY_CONFIG.selectionCount}
                     className={`
-                        px-8 py-3 rounded-full font-bold text-lg shadow-lg transition-all
+                        px-8 py-3 rounded-full font-bold text-sm tracking-wider uppercase shadow-lg transition-all
                         ${selectedNumbers.length === LOTTERY_CONFIG.selectionCount 
-                            ? 'bg-gradient-to-r from-green-500 to-emerald-600 hover:scale-105 text-white' 
-                            : 'bg-slate-700 text-slate-500 cursor-not-allowed'}
+                            ? 'bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white hover:scale-105' 
+                            : 'bg-slate-800 text-slate-500 cursor-not-allowed'}
                     `}
                 >
-                    Buy Ticket
+                    Confirm Purchase
                 </button>
             </div>
             {purchaseMsg && (
-                <div className={`mt-4 text-center text-sm font-bold ${purchaseMsg.type === 'success' ? 'text-green-400' : 'text-red-400'}`}>
-                    {purchaseMsg.text}
+                <div className={`mt-4 p-3 rounded-xl text-center text-sm font-bold flex items-center justify-center gap-2 animate-bounce ${purchaseMsg.type === 'success' ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-red-500/20 text-red-400 border border-red-500/30'}`}>
+                   {purchaseMsg.type === 'success' ? '🎟️' : '⚠️'} {purchaseMsg.text}
                 </div>
             )}
         </section>
 
         {/* History Section */}
-        <section className="glass-panel p-6 md:p-8 rounded-2xl overflow-hidden flex flex-col h-[600px]">
-             <h2 className="text-2xl font-display font-bold mb-6 text-white flex items-center gap-2">
-                <span className="w-2 h-8 bg-purple-500 rounded-full inline-block"></span>
+        <section className="glass-panel p-8 rounded-3xl flex flex-col h-[650px] border border-white/10">
+             <h2 className="text-2xl font-display font-bold mb-6 text-white flex items-center gap-3">
+                <span className="flex items-center justify-center w-10 h-10 rounded-full bg-purple-500 text-white shadow-lg shadow-purple-500/40">2</span>
                 My Tickets
             </h2>
             
             <div className="flex-1 overflow-y-auto space-y-3 pr-2 custom-scrollbar">
                 {tickets.length === 0 ? (
-                    <div className="text-center text-slate-500 mt-20">No tickets purchased yet.</div>
+                    <div className="h-full flex flex-col items-center justify-center text-slate-500 opacity-50">
+                        <svg className="w-16 h-16 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" /></svg>
+                        <p>No active tickets found</p>
+                    </div>
                 ) : (
                     tickets.map(ticket => (
-                        <div key={ticket.id} className="bg-white/5 p-4 rounded-xl border border-white/5 hover:border-white/20 transition-all">
-                            <div className="flex justify-between items-start mb-2">
-                                <span className="text-xs text-slate-400">ID: {ticket.id}</span>
-                                <span className={`text-xs font-bold px-2 py-1 rounded ${
-                                    ticket.status === 'WON' ? 'bg-green-500/20 text-green-400' : 
-                                    ticket.status === 'LOST' ? 'bg-red-500/20 text-red-400' : 
-                                    'bg-yellow-500/20 text-yellow-400'
+                        <div key={ticket.id} className={`group relative p-4 rounded-2xl border transition-all duration-300 ${
+                            ticket.status === 'WON' ? 'bg-gradient-to-r from-green-900/20 to-emerald-900/20 border-green-500/30' : 
+                            ticket.status === 'LOST' ? 'bg-red-900/5 border-red-500/10 opacity-75' : 
+                            'bg-white/5 border-white/5 hover:bg-white/10'
+                        }`}>
+                            {ticket.status === 'WON' && <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full animate-ping"></div>}
+                            
+                            <div className="flex justify-between items-center mb-3">
+                                <span className="text-[10px] font-mono text-slate-500 uppercase">#{ticket.id.slice(-8)}</span>
+                                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${
+                                    ticket.status === 'WON' ? 'bg-green-500 text-black shadow-[0_0_10px_rgba(34,197,94,0.5)]' : 
+                                    ticket.status === 'LOST' ? 'text-red-400 bg-red-900/20' : 
+                                    'text-yellow-400 bg-yellow-900/20'
                                 }`}>
                                     {ticket.status}
                                 </span>
                             </div>
+                            
                             <div className="flex gap-2 justify-center mb-3">
                                 {ticket.numbers.map(n => (
-                                    <span key={n} className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center font-bold text-sm border border-slate-600">
+                                    <span key={n} className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-inner ${
+                                        ticket.status === 'WON' ? 'bg-green-500/20 text-green-300 border border-green-500/30' : 'bg-slate-800 text-slate-300 border border-slate-700'
+                                    }`}>
                                         {n}
                                     </span>
                                 ))}
                             </div>
+                            
                             {ticket.status === 'WON' && (
-                                <div className="text-center text-green-400 font-bold text-sm">
-                                    + ${ticket.winAmount?.toLocaleString()}
+                                <div className="mt-2 text-center">
+                                    <span className="text-green-400 font-bold text-lg drop-shadow-[0_0_8px_rgba(74,222,128,0.5)]">
+                                        + ${ticket.winAmount?.toLocaleString()}
+                                    </span>
                                 </div>
                             )}
-                            <div className="text-center text-xs text-slate-500 mt-2">
-                                {new Date(ticket.purchaseDate).toLocaleString()}
+                            
+                            <div className="text-center text-[10px] text-slate-500 mt-2">
+                                Purchased: {new Date(ticket.purchaseDate).toLocaleDateString()}
                             </div>
                         </div>
                     ))

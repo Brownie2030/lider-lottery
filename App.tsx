@@ -21,7 +21,7 @@ function App() {
 
   const handleLogin = (loggedInUser: User) => {
     setUser(loggedInUser);
-    setCurrentPage(loggedInUser.role === UserRole.ADMIN ? 'admin' : 'dashboard');
+    setCurrentPage(loggedInUser.role === UserRole.ADMIN ? 'admin-dashboard' : 'dashboard');
   };
 
   const handleLogout = () => {
@@ -40,38 +40,47 @@ function App() {
       case 'home':
         return <Home onNavigate={setCurrentPage} />;
       case 'login':
-        return <Login onLogin={handleLogin} onNavigate={setCurrentPage} />;
+        // Separate login page for regular users
+        return <Login mode="USER" onLogin={handleLogin} onNavigate={setCurrentPage} />;
+      case 'admin-login':
+        // Separate login page for admins
+        return <Login mode="ADMIN" onLogin={handleLogin} onNavigate={setCurrentPage} />;
       case 'dashboard':
         return user && user.role === UserRole.USER 
           ? <UserDashboard user={user} refreshUser={handleRefreshUser} /> 
-          : <div className="text-center mt-20 text-red-500">Access Denied. Please login.</div>;
-      case 'admin':
+          : <Login mode="USER" onLogin={handleLogin} onNavigate={setCurrentPage} />;
+      case 'admin-dashboard':
         return user && user.role === UserRole.ADMIN 
           ? <AdminDashboard user={user} /> 
-          : <div className="text-center mt-20 text-red-500">Access Denied. Admin only.</div>;
+          : <Login mode="ADMIN" onLogin={handleLogin} onNavigate={setCurrentPage} />;
       default:
         return <Home onNavigate={setCurrentPage} />;
     }
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-200 font-sans selection:bg-purple-500 selection:text-white">
+    <div className="min-h-screen text-slate-200 font-sans selection:bg-purple-500 selection:text-white flex flex-col">
       <Navbar 
         user={user} 
         onLogout={handleLogout} 
-        onNavigate={(page) => {
-            // Guard clauses for direct navigation
-            if(page === 'dashboard' && (!user || user.role !== UserRole.USER)) return;
-            if(page === 'admin' && (!user || user.role !== UserRole.ADMIN)) return;
-            setCurrentPage(page);
-        }} 
+        onNavigate={setCurrentPage}
       />
-      <main className="pb-20">
+      <main className="flex-grow pb-20 pt-4">
         {renderPage()}
       </main>
       
-      <footer className="fixed bottom-0 w-full py-4 bg-black/40 backdrop-blur-md text-center text-xs text-slate-600 border-t border-white/5">
-        <p>&copy; 2024 Nebula Lotto. Simulated Gambling Environment. No real money involved.</p>
+      <footer className="w-full py-6 text-center border-t border-white/5 bg-black/20 backdrop-blur-sm">
+        <p className="text-xs text-slate-500 mb-2">
+            &copy; 2024 Nebula Lotto System. Secure. Provably Fair.
+        </p>
+        {!user && (
+            <button 
+                onClick={() => setCurrentPage('admin-login')}
+                className="text-[10px] text-slate-700 hover:text-slate-500 transition-colors uppercase tracking-widest"
+            >
+                Staff Portal
+            </button>
+        )}
       </footer>
     </div>
   );

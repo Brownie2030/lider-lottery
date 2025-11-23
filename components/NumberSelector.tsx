@@ -10,7 +10,7 @@ export const NumberSelector: React.FC<NumberSelectorProps> = ({ selectedNumbers,
   const numbers = Array.from({ length: LOTTERY_CONFIG.maxNumber }, (_, i) => i + 1);
 
   return (
-    <div className="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 gap-2 p-4 glass-panel rounded-2xl">
+    <div className="grid grid-cols-5 sm:grid-cols-7 md:grid-cols-10 gap-3 p-6 bg-black/20 rounded-2xl border border-white/5 shadow-inner">
       {numbers.map((num) => {
         const isSelected = selectedNumbers.includes(num);
         return (
@@ -18,16 +18,18 @@ export const NumberSelector: React.FC<NumberSelectorProps> = ({ selectedNumbers,
             key={num}
             onClick={() => onToggleNumber(num)}
             className={`
-              relative w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center text-sm sm:text-base font-bold transition-all duration-300
-              ${isSelected 
-                ? 'bg-gradient-to-br from-yellow-400 to-orange-500 text-black scale-110 shadow-[0_0_15px_rgba(251,191,36,0.5)]' 
-                : 'bg-slate-700/50 hover:bg-slate-600 text-slate-300 hover:text-white border border-slate-600'
-              }
+              relative w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center 
+              text-sm sm:text-base font-bold transition-all duration-200
+              ${isSelected ? 'ball-selected text-black -translate-y-1' : 'ball-gradient text-slate-300 hover:text-white hover:scale-105'}
             `}
           >
-            {num}
+            <span className="relative z-10 font-display drop-shadow-md">{num}</span>
+            
+            {/* Specular highlight for 3D effect */}
+            <div className="absolute top-[10%] left-[10%] w-[40%] h-[40%] bg-gradient-to-br from-white/40 to-transparent rounded-full pointer-events-none"></div>
+            
             {isSelected && (
-                <div className="absolute inset-0 rounded-full border-2 border-white/50 animate-pulse"></div>
+                <div className="absolute inset-0 rounded-full ring-2 ring-yellow-400 ring-offset-2 ring-offset-black/50 animate-pulse"></div>
             )}
           </button>
         );
